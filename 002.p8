@@ -43,21 +43,54 @@ function _init()
 	load_palette(4,2)
 	load_palette(5,3)
 
+	sparks = {}
+end
+
+function create_spark(s)
+	local p={
+		x=px,
+		y=py,
+		dx=rnd(0.2)-0.1,
+		dy=-rnd(0.2),
+		w=21,
+		t=0,
+		max_t=60+flr(rnd(60)),
+		col=10,
+	}
+	add(s, p)
+	return p
 end
 
 function _update60()
 	if (btnp(❎)) debug=not debug
+	if (#sparks<3) create_spark(sparks)
 	adjust_velocity()
 	advance_sprite()
 	move_cursor()
+	foreach(sparks, move_spark)
+end
+
+function move_spark(s)
+ s.t+=1
+ if (s.t > s.max_t) then
+ 	del(sparks, s)
+ 	return
+ end
+ if (s.t > 0.5*s.max_t) then
+ 	s.col=9
+ end
+ s.x+=s.dx
+ s.y+=s.dy
 end
 
 function _draw()
 	cls()
-	if (not debug) clip(px-42, py-42, 84, 84)
+ if (not debug) clip(px-42, py-42, 84, 84)
  draw_background()
  draw_cursor()
 	apply_lighting(px, py, px-42, px+42)
+	--clip()
+	foreach(sparks, draw_spark)
 	if (debug) then
 		clip()
 	 print(flr(100*stat(1)).."%", 0, 0, 1)
@@ -65,7 +98,11 @@ function _draw()
 	end
 end
 
---
+---
+
+function draw_spark(s)
+	circfill(s.x, s.y, 0, s.col)
+end
 
 function advance_sprite()
 	if (abs(velx) + abs(vely)) > 0.5 then
@@ -132,11 +169,20 @@ end
 --maxrange = 42
 --levels = 6
 
---[[function nonmax_clip(particles)
- x,y,
-function light_particle(p)
-	apply_lighting(p.x, p.y
-]]--
+function nonmax_clip(particles)
+ local xmin,ymin,xmax,ymax=0,0,0,0
+ for p in all(particles) do
+ 	if (p.x<xmin) xmin=p.x
+ 	if (p.y<ymin) ymin=p.y
+ 	if (p.x+p.w>xmax) xmax=p.x+p.w
+ 	if (p.y+p.w>ymax) ymax=p.y+p.w
+ end
+ return {xmin, ymin, xmax-xmin, ymax-ymin}
+end
+
+--function light_particle(p)
+--	apply_lighting(p.x, p.y
+--end
 
 function apply_lighting(lx, ly, x1, x2)
 	local maxrange = 42
