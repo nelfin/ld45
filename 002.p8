@@ -90,8 +90,8 @@ function adjust_velocity()
 	end
 	velx /= 1.03
 	vely /= 1.03
-	if (abs(velx) < 0.001) velx = 0
-	if (abs(vely) < 0.001) vely = 0
+	if (abs(velx) < 0.01) velx = 0
+	if (abs(vely) < 0.01) vely = 0
 	if (velx < -2) velx = -2
 	if (velx > 2) velx = 2
 	if (vely < -2) vely = -2
