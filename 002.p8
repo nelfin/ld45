@@ -54,7 +54,7 @@ end
 
 function _draw()
 	cls()
-	if (not debug) clip(px-42, py-42, 84, 84) 
+	if (not debug) clip(px-42, py-42, 84, 84)
  draw_background()
  draw_cursor()
 	apply_lighting(px, py, px-42, px+42)
@@ -124,7 +124,7 @@ function draw_background()
 end
 
 function draw_cursor()
-	spr(psprite, px, py)
+	spr(psprite, px-4, py-3)
 end
 
 -->8
@@ -132,12 +132,18 @@ end
 --maxrange = 42
 --levels = 6
 
+--[[function nonmax_clip(particles)
+ x,y,
+function light_particle(p)
+	apply_lighting(p.x, p.y
+]]--
+
 function apply_lighting(lx, ly, x1, x2)
 	local maxrange = 42
 	local levels = 6
 	for cy=-maxrange,maxrange do
 		local offset = flr(rnd(2))-1
-		local retval = breakpoints(cy)
+		local retval = breakpoints(maxrange, cy)
 		local xs = x1+offset
 		for lvl=levels,retval.top+1,-1 do
 			local xe = lx-retval.b[lvl-1]+offset
@@ -152,10 +158,24 @@ function apply_lighting(lx, ly, x1, x2)
 	 fills[levels](xs, x2+offset, ly+cy, levels)
 	end
 end
-	
-function _breakpoints(cy)
- light_range = {10*42, 18*42, 26*42, 34*42, 42*42}
- ret = {}
+
+function _ranges(maxrange)
+ local m=maxrange
+ --local levels=5
+ return {
+ 	flr(0.25*m*m),
+ 	flr(0.4375*m*m),
+ 	flr(0.625*m*m),
+ 	flr(0.8125*m*m),
+ 	m*m
+ }
+end
+
+function _breakpoints(maxrange, cy)
+ local m=maxrange
+ --light_range = --{10*42, 18*42, 26*42, 34*42, 42*42}
+ local light_range = _ranges(maxrange)
+ local ret = {}
  ret.b = {0,0,0,0,0}
  ret.top = 1
  y2 = cy*cy
@@ -172,14 +192,15 @@ function _breakpoints(cy)
  return ret
 end
 
-function breakpoints(cy)
-	if cachebp == nil then
-		cachebp = {}
-	for cy=-42,42 do
-			cachebp[cy] = _breakpoints(cy)
+cachebp={}
+function breakpoints(maxrange, cy)
+	if cachebp[maxrange] == nil then
+		cachebp[maxrange] = {}
+		for cy=-maxrange,maxrange do
+			cachebp[maxrange][cy] = _breakpoints(maxrange,cy)
 		end
 	end
-	return cachebp[cy]
+	return cachebp[maxrange][cy]
 end
 
 function fill_none(xmin, xmax, y, lvl)
@@ -430,7 +451,7 @@ __sfx__
 000a00000761002610036100461004610046100561004610046100361001610006100061000610006100061001610026100361001610036100561005610056100060000600006000060000600006000060000600
 000100001021002210002100020000200002000020000200002000020000200002000020000200002000020000200002000020000200002000020000200002000020000200002000020000200002000020000200
 000800000a8200b8400f8501785010850128600b8501284015830188301784012860148401484014840168501a8502185024860218601c85017850188501a8401484012840128200d830088200e8101282011820
-011000002480024800248002390000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+001000002480024800248002390000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
 03 02414344
 00 42414344
