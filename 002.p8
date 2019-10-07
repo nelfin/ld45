@@ -87,18 +87,18 @@ function adjust_velocity()
 		velx = 0
 		vely = 0
 	end
-	velx /= 1.01
-	vely /= 1.01
+	velx /= 1.03
+	vely /= 1.03
 	if (abs(velx) < 0.001) velx = 0
 	if (abs(vely) < 0.001) vely = 0
 	if (velx < -2) velx = -2
 	if (velx > 2) velx = 2
 	if (vely < -2) vely = -2
 	if (vely > 2) vely = 2
-	if (btn(⬅️)) velx -= 0.02
-	if (btn(➡️)) velx += 0.02
-	if (btn(⬆️)) vely -= 0.02
-	if (btn(⬇️)) vely += 0.02
+	if (btn(⬅️)) velx -= 0.03
+	if (btn(➡️)) velx += 0.03
+	if (btn(⬆️)) vely -= 0.03
+	if (btn(⬇️)) vely += 0.03
 end
 
 function move_cursor()
